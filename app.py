@@ -13,6 +13,9 @@ from datetime import timedelta
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins":"*"}})
 
+app.config['SESSION_TYPE'] = 'filesystem'
+
+
 app.secret_key = 'billorani'
 app.permanent_session_lifetime = timedelta(days=5)  # Set session timeout
 
@@ -188,11 +191,11 @@ chat_session = model.start_chat(
 @app.route("/", methods=['POST'])
 def index():
     if request.method == 'POST':
-        # content_pickle = session.get('gemini detective game data')
-        # if content_pickle:
-        #   chat_session.history = (jsonpickle.decode(content_pickle))
-        # else:
-        #   print("No data found")
+        content_pickle = session.get('gemini detective game data')
+        if content_pickle:
+          chat_session.history = (jsonpickle.decode(content_pickle))
+        else:
+          print("No data found")
           
         data = request.get_json()
         
@@ -205,7 +208,7 @@ def index():
         
         while (not response):
           response = chat_session.send_message(message)  
-        # session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
+        session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
         # print("pushing",jsonpickle.decode(session.get('gemini detective game data')))
         y = (response.text)
         response_obj = Response(y, content_type="application/json")
