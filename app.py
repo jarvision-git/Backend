@@ -11,7 +11,7 @@ from datetime import timedelta
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://noirchronicles.netlify.app"}})
+CORS(app)
 
 app.secret_key = 'billorani'
 app.permanent_session_lifetime = timedelta(days=5)  # Set session timeout
