@@ -20,6 +20,8 @@ import os
 
 import google.generativeai as genai
 
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+
 genai.configure(api_key="AIzaSyAiU1xIWXdK3lLlgdCDIRIjISkVMdEoWpU")
 
 # Create the model
@@ -29,15 +31,6 @@ generation_config = {
   "top_k": 64,
   "max_output_tokens": 8192,
   "response_mime_type": "application/json",
-  "safety_settings": {
-        "enabled": True,
-        "max_probabilities": {
-            "HARM_CATEGORY_SEXUALLY_EXPLICIT": "LOW",
-            "HARM_CATEGORY_HATE_SPEECH": "LOW",
-            "HARM_CATEGORY_HARASSMENT": "LOW",
-            "HARM_CATEGORY_DANGEROUS_CONTENT": "LOW",
-        }
-    }
 }
 
 model = genai.GenerativeModel(
@@ -191,23 +184,6 @@ chat_session = model.start_chat(
 )
 
 
-# @app.route("/", methods=['POST'])
-# def index():
-#     if request.method == 'POST':
-#         data = request.get_json()
-#         message = data.get('message')
-#         print('Received message:', message)
-
-#         def generate_chunks():
-#             response = model.generate_content_stream(message)
-#             for chunk in response:
-#                 yield f"data: {chunk.text}\n\n"
-
-#         # Use EventSource to stream response chunks
-#         return EventSource(generate_chunks())
-#     else:
-#         return("No msg received")
-
 
 @app.route("/", methods=['POST'])
 def index():
@@ -228,7 +204,10 @@ def index():
         response = ""
         
         while (not response):
-          response = chat_session.send_message(message)
+          response = chat_session.send_message([message],safety_settings={
+          HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+          HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+          })  
         session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
         # print("pushing",jsonpickle.decode(session.get('gemini detective game data')))
         y = (response.text)
@@ -251,13 +230,6 @@ def restart():
   )
   return ("restart")
     
-# @app.route('/send')
-# def send_message(message):
-#     response = model.generate_content("start")
-#     print("Message sent",message)
-#     y = (response.text)
-#     return(jsonify(y))
-
 
 @app.route("/hint", methods=['POST'])
 def hint():
@@ -266,7 +238,7 @@ def hint():
         
         message = data.get('message')
         print('Received message:', message)
-        response = chat_session.send_message(message)  
+        response = chat_session.send_message(message)
         y = (response.text)
         y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
         print(y)
