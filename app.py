@@ -204,10 +204,7 @@ def index():
         response = ""
         
         while (not response):
-          response = chat_session.send_message([message],safety_settings={
-          HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-          HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-          })  
+          response = chat_session.send_message(message)  
         session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
         # print("pushing",jsonpickle.decode(session.get('gemini detective game data')))
         y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
