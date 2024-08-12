@@ -207,8 +207,8 @@ def index():
           response = chat_session.send_message(message)  
         session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
         # print("pushing",jsonpickle.decode(session.get('gemini detective game data')))
-        y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
         y = (response.text)
+        y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
         # print(chat_session.history)
         print(y)
         return y
