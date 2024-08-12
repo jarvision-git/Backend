@@ -244,7 +244,8 @@ def hint():
         print('Received message:', message)
         response = chat_session.send_message(message)
         y = (response.text)
-        y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
+        response_obj = Response(y, content_type="application/json")
+        response_obj.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
         print(y)
         return y
     else:
