@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify,session
+from flask import Flask, request, jsonify,session, Response
 import jsonpickle
 
 import json
@@ -208,10 +208,10 @@ def index():
         session['gemini detective game data'] = jsonpickle.encode(chat_session.history)
         # print("pushing",jsonpickle.decode(session.get('gemini detective game data')))
         y = (response.text)
-        y.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
-        # print(chat_session.history)
+        response_obj = Response(y, content_type="application/json")
+        response_obj.headers['Access-Control-Allow-Origin'] = 'https://noirchronicles.netlify.app'
         print(y)
-        return y
+        return response_obj
     else:
         return("No msg received")
     
