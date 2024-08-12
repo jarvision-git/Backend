@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify,session, Response
+from flask_session import Session
+
 import jsonpickle
 
 import json
@@ -14,6 +16,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins":"*"}})
 
 app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 
 app.secret_key = 'billorani'
